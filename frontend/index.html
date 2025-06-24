@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>3-Tier App</title></head>
+<body>
+  <h1>Welcome to the 3-Tier App</h1>
+  <p>Backend response: <span id="message">Loading...</span></p>
+  <script>
+    fetch('http://13.235.247.157:3000')
+      .then(res => res.text())
+      .then(msg => document.getElementById('message').textContent = msg);
+  </script>
+</body>
+</html>
+
