@@ -28,21 +28,22 @@ pipeline {
     }
 
     stage('Deploy Backend') {
-      steps {
-        sshagent(['Anjankey']) {
-          sh '''
-            scp -o StrictHostKeyChecking=no -r backend ubuntu@$BACKEND_IP:/home/ubuntu/
-            ssh -o StrictHostKeyChecking=no ubuntu@$BACKEND_IP "
-              pkill -f 'node' || true
-              cd /home/ubuntu/backend
-              cp .env.example .env
-              npm install
-              nohup npm start > backend.log 2>&1 &
-            "
-          '''
-        }
-      }
+  steps {
+    sshagent(['Anjankey']) {
+      sh '''
+        scp -o StrictHostKeyChecking=no -r backend ubuntu@$BACKEND_IP:/home/ubuntu/
+        ssh -o StrictHostKeyChecking=no ubuntu@$BACKEND_IP << 'EOF'
+          pkill -f node || true
+          cd /home/ubuntu/backend
+          cp .env.example .env
+          npm install
+          nohup npm start > backend.log 2>&1 &
+        EOF
+      '''
     }
+  }
+}
+
 
     stage('Initialize Database') {
       steps {
