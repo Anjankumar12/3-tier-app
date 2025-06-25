@@ -18,8 +18,8 @@ pipeline {
       steps {
         sshagent(['Anjankey']) {
           sh '''
-            scp frontend/index.html ec2-user@$FRONTEND_IP:/tmp/
-            ssh ec2-user@$FRONTEND_IP "sudo mv /tmp/index.html /usr/share/nginx/html/index.html"
+            scp -o StrictHostKeyChecking=no frontend/index.html ubuntu@$FRONTEND_IP:/tmp/
+            ssh -o StrictHostKeyChecking=no ubuntu@$FRONTEND_IP "sudo mv /tmp/index.html /usr/share/nginx/html/index.html"
           '''
         }
       }
@@ -29,9 +29,9 @@ pipeline {
       steps {
         sshagent(['Anjankey']) {
           sh '''
-            scp -r backend ec2-user@$BACKEND_IP:/home/ec2-user/
-            ssh ec2-user@$BACKEND_IP "
-              cd /home/ec2-user/backend &&
+            scp -o StrictHostKeyChecking=no -r backend ubuntu@$BACKEND_IP:/home/ubuntu/
+            ssh -o StrictHostKeyChecking=no ubuntu@$BACKEND_IP "
+              cd /home/ubuntu/backend &&
               cp .env.example .env &&
               npm install &&
               nohup npm start &
@@ -45,12 +45,13 @@ pipeline {
       steps {
         sshagent(['Anjankey']) {
           sh '''
-            scp database/init.sql ec2-user@$DB_IP:/tmp/
-            ssh ec2-user@$DB_IP "mysql -u root -pyourpassword < /tmp/init.sql"
+            scp -o StrictHostKeyChecking=no database/init.sql ubuntu@$DB_IP:/tmp/
+            ssh -o StrictHostKeyChecking=no ubuntu@$DB_IP "mysql -u root -pyourpassword < /tmp/init.sql"
           '''
         }
       }
     }
   }
 }
+
 
