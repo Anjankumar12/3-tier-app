@@ -5,8 +5,8 @@ pipeline {
     FRONTEND_IP = "3.6.175.203"
     BACKEND_IP  = "3.6.96.235"
     DB_IP       = "13.200.157.185"
-    MYSQL_USER  = "root"                 
-    MYSQL_PASS  = "yourpassword"         // Replace this with Jenkins credentials ID for better security
+    MYSQL_USER  = "root"
+    MYSQL_PASS  = "Anji@10"  // You can move this to Jenkins credentials securely
   }
 
   stages {
@@ -34,13 +34,13 @@ pipeline {
           sh '''
             echo "Deploying backend to $BACKEND_IP"
             scp -o StrictHostKeyChecking=no -r backend ubuntu@$BACKEND_IP:/home/ubuntu/
-            ssh -o StrictHostKeyChecking=no ubuntu@$BACKEND_IP <<EOF
-              pkill -f node || true
-              cd /home/ubuntu/backend
-              cp .env.example .env
-              npm install
+            ssh -o StrictHostKeyChecking=no ubuntu@$BACKEND_IP "
+              pkill -f node || true && \
+              cd /home/ubuntu/backend && \
+              cp .env.example .env && \
+              npm install && \
               nohup npm start > backend.log 2>&1 &
-            EOF
+            "
           '''
         }
       }
@@ -59,6 +59,7 @@ pipeline {
     }
   }
 }
+
 
 
 
