@@ -3,8 +3,8 @@ pipeline {
 
   environment {
     FRONTEND_IP = "3.6.175.203"
-    BACKEND_IP  = "13.235.247.157"
-    DB_IP       = "3.111.187.120"
+    BACKEND_IP  = "3.6.96.235"
+    DB_IP       = "13.200.157.185"
   }
 
   stages {
