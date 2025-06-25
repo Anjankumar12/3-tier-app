@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    FRONTEND_IP = "13.127.151.197"
+    FRONTEND_IP = "3.6.175.203"
     BACKEND_IP  = "13.235.247.157"
     DB_IP       = "3.111.187.120"
   }
