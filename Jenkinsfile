@@ -31,6 +31,7 @@ pipeline {
           sh '''
             scp -o StrictHostKeyChecking=no -r backend ubuntu@$BACKEND_IP:/home/ubuntu/
             ssh -o StrictHostKeyChecking=no ubuntu@$BACKEND_IP "
+              pkill -f 'node app.js' || true &&
               cd /home/ubuntu/backend &&
               cp .env.example .env &&
               npm install &&
@@ -46,12 +47,13 @@ pipeline {
         sshagent(['Anjankey']) {
           sh '''
             scp -o StrictHostKeyChecking=no database/init.sql ubuntu@$DB_IP:/tmp/
-            ssh -o StrictHostKeyChecking=no ubuntu@$DB_IP "mysql -u root -pyourpassword < /tmp/init.sql"
+            ssh -o StrictHostKeyChecking=no ubuntu@$DB_IP 'mysql -h 127.0.0.1 -u jenkins -pyourpassword < /tmp/init.sql'
           '''
         }
       }
     }
   }
 }
+
 
 
