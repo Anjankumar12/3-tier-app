@@ -29,29 +29,28 @@ pipeline {
     }
 
     stage('Deploy Backend') {
-      steps {
-        sshagent(['Anjankey']) {
-          sh '''
-            echo "Deploying backend to $BACKEND_IP"
-            scp -o StrictHostKeyChecking=no -r backend ubuntu@$BACKEND_IP:/home/ubuntu/
+  steps {
+    sshagent(['Anjankey']) {
+      sh '''
+        echo "Deploying backend to $BACKEND_IP"
+        scp -o StrictHostKeyChecking=no -r backend ubuntu@$BACKEND_IP:/home/ubuntu/
+        ssh -o StrictHostKeyChecking=no ubuntu@$BACKEND_IP <<EOF
+          pkill -f node || true
+          cd /home/ubuntu/backend
 
-            ssh -o StrictHostKeyChecking=no ubuntu@$BACKEND_IP '
-              pkill -f node || true
-              cd /home/ubuntu/backend
+          echo "DB_HOST=$DB_IP" > .env
+          echo "DB_USER=$MYSQL_USER" >> .env
+          echo "DB_PASS=$MYSQL_PASS" >> .env
+          echo "DB_NAME=appdb" >> .env
 
-              # Write correct .env file dynamically
-              echo "DB_HOST=$DB_IP" > .env
-              echo "DB_USER=$MYSQL_USER" >> .env
-              echo "DB_PASS=$MYSQL_PASS" >> .env
-              echo "DB_NAME=appdb" >> .env
-
-              npm install
-              nohup node app.js > backend.log 2>&1 &
-            '
-          '''
-        }
-      }
+          npm install
+          nohup node app.js > backend.log 2>&1 &
+        EOF
+      '''
     }
+  }
+}
+
 
     stage('Initialize Database') {
       steps {
