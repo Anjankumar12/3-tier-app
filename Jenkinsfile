@@ -43,17 +43,19 @@ pipeline {
               cd /home/ubuntu/backend
 
               echo "Writing .env file..."
-              echo "DB_HOST=$DB_IP" > .env
-              echo "DB_USER=$MYSQL_USER" >> .env
-              echo "DB_PASS=$MYSQL_PASS" >> .env
+              echo "DB_HOST=${DB_IP}" > .env
+              echo "DB_USER=${MYSQL_USER}" >> .env
+              echo "DB_PASS=${MYSQL_PASS}" >> .env
               echo "DB_NAME=appdb" >> .env
 
-              echo "Installing dependencies..."
-              if ! command -v npm &> /dev/null; then
+              echo "Installing Node.js and npm if not present..."
+              if ! command -v npm >/dev/null 2>&1; then
                 echo "Installing Node.js and npm..."
                 sudo apt update
                 sudo apt install -y nodejs npm
               fi
+              echo "Installing backend dependencies..."
+              npm install
 
               echo "Starting backend..."
               nohup node app.js > backend.log 2>&1 &
@@ -61,6 +63,7 @@ pipeline {
           '''
         }
       }
+      
     }
 
     stage('Initialize Database') {
