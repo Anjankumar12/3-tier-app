@@ -7,3 +7,4 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 
 INSERT INTO messages (message) VALUES ('Hello from MySQL!');
+
